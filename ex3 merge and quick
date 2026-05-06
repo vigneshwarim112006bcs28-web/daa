@@ -1,0 +1,148 @@
+[24bcs098@mepcolinux ex3]$cat ex3.prn
+[24bcs098@mepcolinux ex3]$cat quick0.c
+#include <stdio.h>
+
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+    int j; // Declare j here for C89 compatibility
+
+    for (j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+void printArray(int arr[], int size) {
+    int i; // Declare i here for C89 compatibility
+    for (i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int n, i, arr[50];
+    printf("Enter number of elements: ");
+    if (scanf("%d", &n) != 1) return 1;
+
+    printf("Enter elements:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    printf("\nArray BEFORE sorting: ");
+    printArray(arr, n);
+
+    quickSort(arr, 0, n - 1);
+
+    printf("Array AFTER sorting: ");
+    printArray(arr, n);
+
+    return 0;
+}
+
+[24bcs098@mepcolinux ex3]$cat merge.c
+#include <stdio.h>
+void merge(int arr[], int left, int mid, int right) {
+    int i, j, k;
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    int L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    i = 0; j = 0; k = left;
+
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergesort(int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergesort(arr, left, mid);
+        mergesort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+int main() {
+    int n, i;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+    int arr[n];
+    printf("Enter %d elements:\n", n);
+    for (i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    mergesort(arr, 0, n - 1);
+
+    printf("Sorted array:\n");
+    for (i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+    return 0;
+}
+output:
+------
+[24bcs086@mepcolinux DAA]$./merge
+Enter number of elements: 5
+Enter 5 elements:
+10
+33
+5
+71
+62
+Sorted array:
+5 10 33 62 71
+[24bcs086@mepcolinux DAA]$nano quick.c
+[24bcs086@mepcolinux DAA]$gcc quick.c -o quick
+[24bcs086@mepcolinux DAA]$./quick
+Enter number of elements: 5
+Enter elements:
+4
+9
+7
+3
+0
+
+Array BEFORE sorting: 4 9 7 3 0
+Array AFTER sorting: 0 3 4 7 9
