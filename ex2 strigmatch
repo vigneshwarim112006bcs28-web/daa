@@ -1,0 +1,170 @@
+#include <stdio.h>
+
+int main()
+{
+    int text[100], pattern[50];
+    int n, m;
+    int i, j;
+    int alignments = 0, comparisons = 0;
+    int foundIndex = -1;
+
+    printf("Enter length of text: ");
+    scanf("%d", &n);
+
+    printf("Enter text elements:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &text[i]);
+
+    printf("Enter length of pattern: ");
+    scanf("%d", &m);
+
+    printf("Enter pattern elements:\n");
+    for (i = 0; i < m; i++)
+        scanf("%d", &pattern[i]);
+
+    printf("\n");
+
+    // Brute force matching
+    for (i = 0; i <= n - m; i++)
+    {
+        alignments++;
+
+        // print spaces for pattern movement
+        for (j = 0; j < i; j++)
+            printf("  ");
+
+        // print pattern
+        for (j = 0; j < m; j++)
+            printf("%d ", pattern[j]);
+
+        printf("\n");
+
+        // comparisons
+        for (j = 0; j < m; j++)
+        {
+            comparisons++;
+            if (text[i + j] != pattern[j])
+                break;
+        }
+
+        if (j == m)
+            foundIndex = i;
+    }
+
+    printf("\nNumber of alignments = %d", alignments);
+    printf("\nNumber of comparisons = %d", comparisons);
+
+    if (foundIndex != -1)
+        printf("\nPattern found at index = %d", foundIndex);
+    else
+        printf("\nPattern not found");
+
+    return 0;
+}
+[24bcs098@mepcolinux ex2]$gcc stringmatch1.c -o stringmatch1
+[24bcs098@mepcolinux ex2]$./srtringmatch1
+Enter length of text: 10
+Enter text elements:
+1
+2
+3
+6
+9
+4
+0
+0
+3
+1
+Enter length of pattern: 2
+Enter pattern elements:
+00
+0
+
+0 0
+  0 0
+    0 0
+      0 0
+        0 0
+          0 0
+            0 0
+              0 0
+                0 0
+
+Number of alignments = 9
+Number of comparisons = 11
+Pattern found at index = 6[24bcs098@mepcolinux ex2]$cat convex2.cpp
+#include <iostream>
+#include <cmath>
+using namespace std;
+double distance(double x1, double y1, double x2, double y2)
+{
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    return sqrt(dx*dx + dy*dy);
+}
+void findClosest(double x[], double y[], int n)
+{
+    double minDist = 999999;
+    int p1 = 0, p2 = 1;
+
+    cout << "\nDistances between each pair:\n";
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            double d = distance(x[i], y[i], x[j], y[j]);
+
+            cout << "(" << x[i] << "," << y[i] << ") - ("
+                 << x[j] << "," << y[j] << ") = " << d << endl;
+
+            if (d < minDist)
+            {
+                minDist = d;
+                p1 = i;
+                p2 = j;
+            }
+        }
+    }
+
+    cout << "\nClosest Pair: (" << x[p1] << "," << y[p1] << ") and ("
+         << x[p2] << "," << y[p2] << ")";
+    cout << "\nMinimum Distance = " << minDist << endl;
+}
+
+int main()
+{
+    int n;
+    cout << "Enter points: ";
+    cin >> n;
+
+    double x[n], y[n];
+
+    cout << "Enter coordinates of x,y:\n";
+    for (int i = 0; i < n; i++)
+    {
+        cin >> x[i] >> y[i];
+    }
+
+    findClosest(x, y, n);
+
+    return 0;
+}
+[24bcs098@mepcolinux ex2]$c++ -c convex2.cpp
+[24bcs098@mepcolinux ex2]$c++ convex2.o -o h
+[24bcs098@mepcolinux ex2]$./h
+Enter points: 3
+Enter coordinates of x,y:
+1 3
+6 7
+9 1
+
+Distances between each pair:
+(1,3) - (6,7) = 6.40312
+(1,3) - (9,1) = 8.24621
+(6,7) - (9,1) = 6.7082
+
+Closest Pair: (1,3) and (6,7)
+Minimum Distance = 6.40312
+[24bcs098@mepcolinux ex2]$exit
+exit
