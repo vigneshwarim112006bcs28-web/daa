@@ -1,0 +1,256 @@
+[24bcs098@mepcolinux ex5]$cat ex5.prn
+Script started on Thu Apr  9 16:25:03 2026
+[?1034h[24bcs098@mepcolinux ex5]$cat count.cpp
+#include <iostream>
+
+using namespace std;
+
+void comparisonSortWithTable(int arr[], int n) {
+    int count[n];
+    int sortedArr[n];
+
+    // Initialize counts to 0
+    for (int i = 0; i < n; i++) count[i] = 0;
+
+    cout << "\nPass #\tElement\t\tCurrent Count Array" << endl;
+    cout << "--------------------------------------------------" << endl;
+
+    // Comparison Logic
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (arr[i] <= arr[j]) {
+                count[j]++;
+            } else {
+                count[i]++;
+            }
+        }
+
+        // Print Row using Tabs (\t) for alignment
+        cout << (i + 1) << "\t" << arr[i] << "\t\t[ ";
+        for (int k = 0; k < n; k++) {
+            cout << count[k] << " ";
+        }
+        cout << "]" << endl;
+    }
+
+    // Placing elements in their sorted positions
+    for (int i = 0; i < n; i++) {
+        sortedArr[count[i]] = arr[i];
+    }
+
+    // Copying back to original array
+    for (int i = 0; i < n; i++) {
+        arr[i] = sortedArr[i];
+    }
+}
+
+int main() {
+    int n;
+
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    int data[n];
+    cout << "Enter " << n << " integers:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Element " << i + 1 << ": ";
+        cin >> data[i];
+    }
+
+    comparisonSortWithTable(data, n);
+
+    cout << "--------------------------------------------------" << endl;
+    cout << "\nFinal Sorted Array: ";
+    for (int i = 0; i < n; i++) {
+        cout << data[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+[24bcs098@mepcolinux ex5]$c++ -c count.cpp
+[24bcs098@mepcolinux ex5]$c++ count.cpp -o hs
+[24bcs098@mepcolinux ex5]$./hs
+Enter the number of elements: 6
+Enter 6 integers:
+Element 1: 6
+Element 2: 9
+Element 3: 0
+Element 4: 3
+Element 5: 10
+Element 6: 25
+
+Pass #  Element         Current Count Array
+--------------------------------------------------
+1       6               [ 2 1 0 0 1 1 ]
+2       9               [ 2 3 0 0 2 2 ]
+3       0               [ 2 3 0 1 3 3 ]
+4       3               [ 2 3 0 1 4 4 ]
+5       10              [ 2 3 0 1 4 5 ]
+--------------------------------------------------
+
+Final Sorted Array: 0 3 6 9 10 25
+[24bcs098@mepcolinux ex5]$cat hors.cpp
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+#define MAX_CHAR 26
+
+void precomputeShiftTable(const char* pattern, int m, int shiftTable[]) {
+    for (int i = 0; i < MAX_CHAR; i++) {
+        shiftTable[i] = m;
+    }
+    for (int j = 0; j < m - 1; j++) {
+        shiftTable[pattern[j] - 'a'] = m - 1 - j;
+    }
+
+    cout << "\n--- Shift Table ---" << endl;
+    for (int j = 0; j < m - 1; j++) {
+        cout << pattern[j] << " : " << shiftTable[pattern[j] - 'a'] << endl;
+    }
+    cout << "Others : " << m << endl;
+}
+
+int horspoolSearch(const char* text, const char* pattern) {
+    int n = strlen(text);
+    int m = strlen(pattern);
+
+    if (m > n) return -1;
+
+    int shiftTable[MAX_CHAR];
+    precomputeShiftTable(pattern, m, shiftTable);
+
+    cout << "\n--- Searching Steps ---" << endl;
+    int i = m - 1;
+    int step = 1;
+
+    while (i < n) {
+        cout << "Step " << step++ << ": Comparing pattern at index " << i - m + 1 << endl;
+        cout << "  Text:    " << text << endl;
+
+        for(int s=0; s < (i - m + 1); s++) cout << " ";
+        cout << "  Pattern: " << pattern << endl;
+
+        int k = 0;
+        while (k < m && pattern[m - 1 - k] == text[i - k]) {
+            k++;
+        }
+
+        if (k == m) {
+            return i - m + 1;
+        } else {
+            int shift = shiftTable[text[i] - 'a'];
+            cout << "  Mismatch! Character '" << text[i] << "' shifts pattern by " << shift << "\n" << endl;
+            i += shift;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    char text[500];
+    char pattern[100];
+
+    cout << "Enter the text (lowercase): ";
+    cin.getline(text, 500);
+
+    cout << "Enter the pattern (lowercase): ";
+    cin.getline(pattern, 100);
+
+    int result = horspoolSearch(text, pattern);
+
+    if (result != -1) {
+        cout << "\nFinal Result: Pattern found at index " << result << endl;
+    } else {
+        cout << "\nFinal Result: Pattern not found." << endl;
+    }
+
+    return 0;
+}
+[24bcs098@mepcolinux ex5]$c++ -c hors.cpp
+[24bcs098@mepcolinux ex5]$c++ hors.cpp -o hs
+[24bcs098@mepcolinux ex5]$./hs
+Enter the text (lowercase): good_morning
+Enter the pattern (lowercase): ord
+
+--- Shift Table ---
+o : 2
+r : 1
+Others : 3
+
+--- Searching Steps ---
+Step 1: Comparing pattern at index 0
+  Text:    good_morning
+  Pattern: ord
+  Mismatch! Character 'o' shifts pattern by 2
+
+Step 2: Comparing pattern at index 2
+  Text:    good_morning
+    Pattern: ord
+  Mismatch! Character '_' shifts pattern by 1819697792
+
+
+Final Result: Pattern not found.
+[24bcs098@mepcolinux ex5]$./hs
+Enter the text (lowercase): goodmorning
+Enter the pattern (lowercase): ord
+
+--- Shift Table ---
+o : 2
+r : 1
+Others : 3
+
+--- Searching Steps ---
+Step 1: Comparing pattern at index 0
+  Text:    goodmorning
+  Pattern: ord
+  Mismatch! Character 'o' shifts pattern by 2
+
+Step 2: Comparing pattern at index 2
+  Text:    goodmorning
+    Pattern: ord
+  Mismatch! Character 'm' shifts pattern by 3
+
+Step 3: Comparing pattern at index 5
+  Text:    goodmorning
+       Pattern: ord
+  Mismatch! Character 'n' shifts pattern by 3
+
+Step 4: Comparing pattern at index 8
+  Text:    goodmorning
+          Pattern: ord
+  Mismatch! Character 'g' shifts pattern by 3
+
+
+Final Result: Pattern not found.
+[24bcs098@mepcolinux ex5]$./hs
+Enter the text (lowercase): googmorning
+Enter the pattern (lowercase): mor
+
+--- Shift Table ---
+m : 2
+o : 1
+Others : 3
+
+--- Searching Steps ---
+Step 1: Comparing pattern at index 0
+  Text:    googmorning
+  Pattern: mor
+  Mismatch! Character 'o' shifts pattern by 1
+
+Step 2: Comparing pattern at index 1
+  Text:    googmorning
+   Pattern: mor
+  Mismatch! Character 'g' shifts pattern by 3
+
+Step 3: Comparing pattern at index 4
+  Text:    googmorning
+      Pattern: mor
+
+Final Result: Pattern found at index 4
+[24bcs098@mepcolinux ex5]$exit
+exit
+
+Script done on Thu Apr  9 16:28:44 2026
