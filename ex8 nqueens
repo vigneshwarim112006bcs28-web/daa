@@ -1,0 +1,99 @@
+[24bcs098@mepcolinux ex8]$cat ex8.prn
+Script started on Saturday 18 April 2026 11:24:17 AM IST
+[?1034h[24bcs098@mepcolinux ex8]$cat nqueen.cpp
+#include <iostream>
+#include <cmath>
+using namespace std;
+int x[100];
+int solutionCount = 0;
+bool Place(int k, int i)
+{
+    for (int j = 1; j <= k - 1; j++)
+    {
+        if ((x[j] == i) || (abs(x[j] - i) == abs(j - k)))
+            return false;
+    }
+    return true;
+}
+void printSolution(int n)
+{
+    solutionCount++;
+    cout << "\n--- Solution #" << solutionCount << " ---" << endl;
+    cout << "Solution Vector: [ ";
+    for (int i = 1; i <= n; i++)
+    {
+        cout << x[i] << " ";
+    }
+    cout << "]" << endl << endl;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (x[i] == j)
+                cout << "Q ";
+            else
+                cout << " - ";
+        }
+        cout << endl;
+    }
+}
+void NQueens(int k, int n)
+{
+    for (int i = 1; i <= n; i++)
+    {
+        if (Place(k, i))
+        {
+            x[k] = i;
+
+            if (k == n)
+                printSolution(n);
+            else
+                NQueens(k + 1, n);
+        }
+    }
+}
+
+int main()
+{
+    int n;
+    cout << "Enter number of queens: ";
+    cin >> n;
+    if (n <= 0) {
+        cout << "Invalid input." << endl;
+        return 0;
+    }
+    NQueens(1, n);
+    cout << "\nTotal solutions: " << solutionCount << endl;
+    return 0;
+}
+
+[24bcs098@mepcolinux ex8]$c++ -c nqueen.cpp
+[24bcs098@mepcolinux ex8]$c++ nqueen.cpp -o hs
+[24bcs098@mepcolinux ex8]$./hs
+Enter number of queens: 3
+
+Total solutions: 0
+[24bcs098@mepcolinux ex8]$./hs
+Enter number of queens: 4
+
+--- Solution #1 ---
+Solution Vector: [ 2 4 1 3 ]
+
+ - Q  -  -
+ -  -  - Q
+Q  -  -  -
+ -  - Q  -
+
+--- Solution #2 ---
+Solution Vector: [ 3 1 4 2 ]
+
+ -  - Q  -
+Q  -  -  -
+ -  -  - Q
+ - Q  -  -
+
+Total solutions: 2
+[24bcs098@mepcolinux ex8]$exit
+exit
+
+Script done on Saturday 18 April 2026 11:24:58 AM IST
