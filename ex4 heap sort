@@ -1,0 +1,132 @@
+[24bcs098@mepcolinux ex4]$cat ex4.prn
+Script started on Thu Apr  9 14:15:17 2026
+[?1034h[24bcs098@mepcolinux ex4]$cat heapf.cpp
+#include <iostream>
+
+using namespace std;
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+}
+
+void percolateDown(int arr[], int n, int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+
+    if (left < n && arr[left] < arr[smallest])
+        smallest = left;
+
+
+    if (right < n && arr[right] < arr[smallest])
+        smallest = right;
+
+
+    if (smallest != i) {
+        int temp = arr[i];
+        arr[i] = arr[smallest];
+        arr[smallest] = temp;
+        percolateDown(arr, n, smallest);
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter number of keys: ";
+    cin >> n;
+
+    int arr[100];
+
+
+    cout << "\n--- STAGE 1: Top-to-Bottom Insertion ---" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Enter element " << i + 1 << ": ";
+        cin >> arr[i];
+    }
+    cout << "Initial Tree (Level-Order): ";
+    printArray(arr, n);
+
+
+    cout << "\n--- STAGE 1: Percolating Down to Build Min-Heap ---" << endl;
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        percolateDown(arr, n, i);
+        cout << "After percolating index " << i << ": ";
+        printArray(arr, n);
+    }
+
+
+    cout << "\n--- STAGE 2: Repeatedly Deleting Min (Sorting) ---" << endl;
+    for (int i = n - 1; i > 0; i--) {
+
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        cout << "Extracted Min [" << temp << "]. New root: [" << arr[0] << "]" << endl;
+
+
+        percolateDown(arr, i, 0);
+        cout << "Heap after percolating down: ";
+        printArray(arr, i);
+        cout << "---------------------------------------" << endl;
+    }
+
+
+    cout << "\nFinal Array (Descending Order via Min-Heap): ";
+    printArray(arr, n);
+
+    return 0;
+}
+[24bcs098@mepcolinux ex4]$c++ -c heapf.cpp
+[24bcs098@mepcolinux ex4]$c++ heapf.cpp -o hs
+[24bcs098@mepcolinux ex4]$./hs
+Enter number of keys: 8
+
+--- STAGE 1: Top-to-Bottom Insertion ---
+Enter element 1: 10
+Enter element 2: 30
+Enter element 3: 5
+Enter element 4: 63
+Enter element 5: 22
+Enter element 6: 12
+Enter element 7: 56
+Enter element 8: 33
+Initial Tree (Level-Order): 10 30 5 63 22 12 56 33
+
+--- STAGE 1: Percolating Down to Build Min-Heap ---
+After percolating index 3: 10 30 5 33 22 12 56 63
+After percolating index 2: 10 30 5 33 22 12 56 63
+After percolating index 1: 10 22 5 33 30 12 56 63
+After percolating index 0: 5 22 10 33 30 12 56 63
+
+--- STAGE 2: Repeatedly Deleting Min (Sorting) ---
+Extracted Min [5]. New root: [63]
+Heap after percolating down: 10 22 12 33 30 63 56
+---------------------------------------
+Extracted Min [10]. New root: [56]
+Heap after percolating down: 12 22 56 33 30 63
+---------------------------------------
+Extracted Min [12]. New root: [63]
+Heap after percolating down: 22 30 56 33 63
+---------------------------------------
+Extracted Min [22]. New root: [63]
+Heap after percolating down: 30 33 56 63
+---------------------------------------
+Extracted Min [30]. New root: [63]
+Heap after percolating down: 33 63 56
+---------------------------------------
+Extracted Min [33]. New root: [56]
+Heap after percolating down: 56 63
+---------------------------------------
+Extracted Min [56]. New root: [63]
+Heap after percolating down: 63
+---------------------------------------
+
+Final Array (Descending Order via Min-Heap): 63 56 33 30 22 12 10 5
+[24bcs098@mepcolinux ex4]$exit
+exit
+
+Script done on Thu Apr  9 14:17:18 2026
+[24bcs098@mepcolinux ex4]$
