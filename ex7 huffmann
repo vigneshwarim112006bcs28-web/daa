@@ -1,0 +1,135 @@
+[24bcs098@mepcolinux ex7]$cat ex7.prn
+Script started on Saturday 18 April 2026 09:44:13 AM IST
+[?1034h[24bcs098@mepcolinux ex7]$cat huf.cpp
+#include <iostream>
+#include <queue>
+#include <map>
+#include <cmath>
+using namespace std;
+
+struct Node {
+    char symbol;
+    float prob;
+    Node *left, *right;
+
+    Node(char s, float p) {
+        symbol = s;
+        prob = p;
+        left = right = NULL;
+    }
+
+    Node(float p, Node* l, Node* r) {
+        symbol = '-';
+        prob = p;
+        left = l;
+        right = r;
+    }
+};
+
+struct compare {
+    bool operator()(Node* l, Node* r) {
+        return l->prob > r->prob;
+    }
+};
+
+void printCodes(Node* root, string code, map<char,string>& codes) {
+
+    if(!root)
+        return;
+
+    if(!root->left && !root->right) {
+        codes[root->symbol] = code;
+        cout << root->symbol << " : " << code << endl;
+    }
+
+    printCodes(root->left, code + "0", codes);
+    printCodes(root->right, code + "1", codes);
+}
+
+int main() {
+
+    int n;
+    cout << "Enter number of symbols: ";
+    cin >> n;
+
+    priority_queue<Node*, vector<Node*>, compare> pq;
+
+    char sym[50];
+    float prob[50];
+
+    for(int i=0;i<n;i++) {
+
+        cout << "Enter symbol: ";
+        cin >> sym[i];
+
+        cout << "Enter probability: ";
+        cin >> prob[i];
+
+        pq.push(new Node(sym[i],prob[i]));
+    }
+
+    while(pq.size()>1) {
+
+        Node* left = pq.top(); pq.pop();
+        Node* right = pq.top(); pq.pop();
+
+        Node* newNode = new Node(left->prob + right->prob, left, right);
+
+        pq.push(newNode);
+    }
+
+    Node* root = pq.top();
+
+    map<char,string> codes;
+
+    cout << "\nHuffman Codes\n";
+    printCodes(root,"",codes);
+
+    float avgBits = 0;
+
+    for(int i=0;i<n;i++) {
+        avgBits += prob[i] * codes[sym[i]].length();
+    }
+
+    cout << "\nAverage bits per symbol = " << avgBits << endl;
+
+    float fixedBits = ceil(log2(n));
+
+    float compression = fixedBits / avgBits;
+
+    cout << "Compression Ratio = " << compression << endl;
+
+    return 0;
+}
+
+[24bcs098@mepcolinux ex7]$c++ -c huf.cpp
+[24bcs098@mepcolinux ex7]$c++ huf.cpp -o hs
+[24bcs098@mepcolinux ex7]$./hs
+Enter number of symbols: 6
+Enter symbol: A
+Enter probability: 0.23
+Enter symbol: B
+Enter probability: 0.11
+Enter symbol: H
+Enter probability: 0.15
+Enter symbol: J
+Enter probability: 0.02
+Enter symbol: M
+Enter probability: 0.19
+Enter symbol: P
+Enter probability: 0.30
+
+Huffman Codes
+M : 00
+A : 01
+J : 1000
+B : 1001
+H : 101
+P : 11
+
+Average bits per symbol = 2.41
+Compression Ratio = 1.24481
+[24bcs098@mepcolinux ex7]$exit
+exit
+
+Script done on Saturday 18 April 2026 09:45:46 AM IST
