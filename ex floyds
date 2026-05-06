@@ -1,0 +1,122 @@
+[24bcs098@mepcolinux ex6]$cat ex6.prn
+Script started on Thu Apr 16 16:15:29 2026
+[?1034h[24bcs098@mepcolinux ex6]$cat flo.cpp
+
+#include <iostream>
+using namespace std;
+
+void printMatrix(int D[10][10], int n, int step) {
+    cout << "\n D(" << step << ")\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (D[i][j] == -1) cout << "-1\t";
+            else cout << D[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int n, edges;
+    int D[10][10];
+
+    cout << "Enter no of vertices: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) D[i][j] = 0;
+            else D[i][j] = -1;
+        }
+    }
+
+    cout << "Enter number of paths: ";
+    cin >> edges;
+
+    for (int i = 0; i < edges; i++) {
+        int u, v, cost;
+        cout << "Enter start vertex: ";
+        cin >> u;
+        cout << "Enter end vertex: ";
+        cin >> v;
+        cout << "Enter cost between " << u << "," << v << ": ";
+        cin >> cost;
+
+        if (u > 0 && u <= n && v > 0 && v <= n) {
+            D[u-1][v-1] = cost;
+        } else {
+            cout << "Invalid vertex!" << endl;
+            i--;
+        }
+    }
+
+    printMatrix(D, n, 0);
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (D[i][k] != -1 && D[k][j] != -1) {
+                    int newDist = D[i][k] + D[k][j];
+                    if (D[i][j] == -1 || newDist < D[i][j]) {
+                        D[i][j] = newDist;
+                    }
+                }
+            }
+        }
+        printMatrix(D, n, k + 1);
+    }
+
+    return 0;
+}
+[24bcs098@mepcolinux ex6]$./hs
+Enter no of vertices: 4
+Enter number of paths: 5
+Enter start vertex: 1
+Enter end vertex: 3
+Enter cost between 1,3: 3
+Enter start vertex: 2
+Enter end vertex: 1
+Enter cost between 2,1: 2
+Enter start vertex: 3
+Enter end vertex: 2
+Enter cost between 3,2: 6
+Enter start vertex: 3
+Enter end vertex: 4
+Enter cost between 3,4: 1
+Enter start vertex: 4
+Enter end vertex: 1
+Enter cost between 4,1: 7
+
+ D(0)
+0       -1      3       -1
+2       0       -1      -1
+-1      6       0       1
+7       -1      -1      0
+
+ D(1)
+0       -1      3       -1
+2       0       5       -1
+-1      6       0       1
+7       -1      10      0
+
+ D(2)
+0       -1      3       -1
+2       0       5       -1
+8       6       0       1
+7       -1      10      0
+
+ D(3)
+0       9       3       4
+2       0       5       6
+8       6       0       1
+7       16      10      0
+
+ D(4)
+0       9       3       4
+2       0       5       6
+8       6       0       1
+7       16      10      0
+[24bcs098@mepcolinux ex6]$exit
+exit
+
+Script done on Thu Apr 16 16:16:48 2026
